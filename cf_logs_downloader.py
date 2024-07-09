@@ -62,10 +62,11 @@ succ_logger.setLevel(logging.INFO)
 fail_logger.setLevel(logging.INFO)
 
 #create handlers to write logs to local storage, and automatically rotate them
-Path("/var/log/cf_logs_downloader/").mkdir(parents=True, exist_ok=True)
-handler_file = logging.handlers.TimedRotatingFileHandler("/var/log/cf_logs_downloader/pull.log", when='H', interval=1, backupCount=120, utc=False, encoding="utf-8") #rotate hourly, store up to 120 hours
-succ_handler_file = logging.handlers.TimedRotatingFileHandler("/var/log/cf_logs_downloader/succ.log", when='D', interval=1, backupCount=30, utc=False, encoding="utf-8") #rotate daily, store up to 30 days
-fail_handler_file = logging.handlers.TimedRotatingFileHandler("/var/log/cf_logs_downloader/fail.log", when='D', interval=1, backupCount=30, utc=False, encoding="utf-8") #rotate daily, store up to 30 days
+self_logs_path = os.getenv("SELF_LOGS_PATH", "/var/log/cf_logs_downloader/")
+Path(self_logs_path).mkdir(parents=True, exist_ok=True)
+handler_file = logging.handlers.TimedRotatingFileHandler(f"{self_logs_path}pull.log", when='H', interval=1, backupCount=120, utc=False, encoding="utf-8") #rotate hourly, store up to 120 hours
+succ_handler_file = logging.handlers.TimedRotatingFileHandler(f"{self_logs_path}succ.log", when='D', interval=1, backupCount=30, utc=False, encoding="utf-8") #rotate daily, store up to 30 days
+fail_handler_file = logging.handlers.TimedRotatingFileHandler(f"{self_logs_path}fail.log", when='D', interval=1, backupCount=30, utc=False, encoding="utf-8") #rotate daily, store up to 30 days
 
 #create a handler to print logs on terminal
 handler_console = logging.StreamHandler()
@@ -86,7 +87,7 @@ succ_logger.addHandler(succ_handler_file)
 fail_logger.addHandler(fail_handler_file)
 
 #create a SQLite queue system to handle failed tasks
-queue = persistqueue.SQLiteQueue('/var/log/cf_logs_downloader/queue/', auto_commit=True, multithreading=True)
+queue = persistqueue.SQLiteQueue(f'{self_logs_path}queue/', auto_commit=True, multithreading=True)
 
 #create a threading event for wait() function
 event = threading.Event()
