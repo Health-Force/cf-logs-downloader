@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+# Patch collections.Mapping usage in yschema
+# ref: https://stackoverflow.com/a/70557518
+import collections.abc
+collections.Mapping = collections.abc.Mapping
+
 #import libraries needed in this program
 #'requests' library needs to be installed first
 import requests, time, threading, os, json, logging, sys, argparse, logging.handlers, yaml, yschema, tempfile, signal, persistqueue
