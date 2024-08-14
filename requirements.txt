@@ -1,4 +1,4 @@
-requests==2.25.1
+requests==2.32.3
 pyyaml==6.0.1
 yschema==1.0.2
 persistqueue==0.1.6
